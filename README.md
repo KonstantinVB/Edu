@@ -1,1 +1,1 @@
-# otus-java-2017-10-bryukhanov
+# Проекты по курсу "Разработчик Java" в Otus.ru
