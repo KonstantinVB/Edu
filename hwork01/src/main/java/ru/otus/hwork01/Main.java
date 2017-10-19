@@ -1,7 +1,5 @@
 package ru.otus.hwork01;
 
-//import hirondelle.date4j.DateTime;
-//import java.util.TimeZone;
 import org.apache.commons.lang3.Conversion;
 import java.util.Scanner;
 
