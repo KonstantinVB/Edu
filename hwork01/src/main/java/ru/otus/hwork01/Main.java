@@ -1,14 +1,16 @@
 package ru.otus.hwork01;
 
-
-import hirondelle.date4j.DateTime;
-import java.util.TimeZone;
+//import hirondelle.date4j.DateTime;
+//import java.util.TimeZone;
+import org.apache.commons.lang3.Conversion;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        // Первый попавшийся HelloWorld с использованием внешней библиотеки
-        System.out.println("Сегодня " +
-                DateTime.now(TimeZone.getDefault()).getDayOfYear() +
-                "й день года");
+        System.out.println("Enter 4 bits to convert using the Msb0 bit ordering:");
+        Scanner in = new Scanner(System.in);
+        int numa = in.nextInt();;
+        System.out.println("Converted: " +
+                Conversion.intToHexDigitMsb0(numa));
     }
 }
