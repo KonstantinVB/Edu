@@ -19,10 +19,10 @@ public class Main {
         calculateMemory(memcnt,"string with 100 char",()-> new String(new char[100]));
     }
 
-    private static void calculateMemory(MemCounter memcnt, String OName, Supplier OBuilder){
-        System.out.print("Size of " + OName + "... ");
+    private static void calculateMemory(MemCounter memcnt, String oName, Supplier oBuilder){
+        System.out.print("Size of " + oName + "... ");
         try {
-            long size = memcnt.calculate(OBuilder);
+            long size = memcnt.calculate(oBuilder);
             System.out.println(size + " bytes");
         }catch(Exception ex){
             System.out.print("calculation was wrong: ");

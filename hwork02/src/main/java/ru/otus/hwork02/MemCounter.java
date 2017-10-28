@@ -1,6 +1,6 @@
 package ru.otus.hwork02;
 
-import java.util.function.*;
+import java.util.function.Supplier;
 
 /**
  * Измеряем размер объектов
@@ -13,10 +13,10 @@ public class MemCounter {
     }
 
     /**
-     * Вычисляет размер объекта, конструирумого с помощью OBuilder с заданным количеством прогонов и объектов.
+     * Вычисляет размер объекта, конструирумого с помощью oBuilder с заданным количеством прогонов и объектов.
      */
-    public long calculate(Supplier OBuilder) throws InterruptedException{
-        return this.calculate(OBuilder,1, 500_000);
+    public long calculate(Supplier oBuilder) throws InterruptedException{
+        return this.calculate(oBuilder,1, 500_000);
     }
 
     public long calculate(Supplier oBuilder, int iCounter, int oCounter) throws InterruptedException {
@@ -24,7 +24,6 @@ public class MemCounter {
         long objectsSizesSum = 0;
         Object[] objectArray;
         for(int i = 0; i < iCounter; i++) {
-            objectArray = null;
             objectArray = new Object[oCounter];
             this.runGC();
             mem1 = getUsedMemory();
