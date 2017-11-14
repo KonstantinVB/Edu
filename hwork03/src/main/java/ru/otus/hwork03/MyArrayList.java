@@ -1,79 +1,113 @@
 package ru.otus.hwork03;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import java.util.List;
-import java.util.Collection;
-import java.util.Arrays;
+import java.util.*;
 
-/**
+/*
  * Создаем ArrayList
  */
-public final class MyArrayList<E> implements List<E>
+public class MyArrayList<E> implements List<E>
 {
-    private static final int DEFAULT_CAPACITY = 16;
-    private static final int MAX_CAPACITY = Integer.MAX_VALUE;
-    private Object[] elements;
+    private static final Object[] EMPTY_ELEMENTDATA = {};
+    transient Object[] elementData; // non-private to simplify nested class access
     private int size;
+    /*
+     * Constructs an empty list.
+     */
     public MyArrayList() {
-        this.elements = new Object[DEFAULT_CAPACITY];
+        this.elementData = EMPTY_ELEMENTDATA;
     }
-    public void ensureCapacity(int minCapacity) {
-        if (minCapacity > this.elements.length) {
-            this.grow(minCapacity);
+    /*
+     * Constructs an empty list with the specified initial capacity.
+     */
+    public MyArrayList(int initialCapacity) {
+        if (initialCapacity > 0) {
+            this.elementData = new Object[initialCapacity];
+        } else if (initialCapacity == 0) {
+            this.elementData = EMPTY_ELEMENTDATA;
+        } else {
+            throw new IllegalArgumentException("Illegal Capacity: "+
+                    initialCapacity);
+        }
+    }
+    /**
+     * Constructs a list containing the elements of the specified
+     * collection, in the order they are returned by the collection's
+     * iterator.
+     */
+    public MyArrayList(Collection<? extends E> c) {
+        elementData = c.toArray();
+        if ((size = elementData.length) != 0) {
+            // c.toArray might (incorrectly) not return Object[] (see 6260652)
+            if (elementData.getClass() != Object[].class)
+                elementData = Arrays.copyOf(elementData, size, Object[].class);
+        } else {
+            // replace with empty array.
+            this.elementData = EMPTY_ELEMENTDATA;
+        }
+    }
+    public ListIterator<E> listIterator(int index) {
+        if (index < 0 || index > size)
+            throw new IndexOutOfBoundsException("Index: "+index);
+        return new ListItr(index);
+    }
+    private class ListItr extends Itr implements ListIterator<E> {
+        ListItr(int index) {
+            super();
+            cursor = index;
+        }
+
+        public boolean hasPrevious() {
+            return cursor != 0;
+        }
+
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+        @SuppressWarnings("unchecked")
+        public E previous() {
+            int i = cursor - 1;
+            if (i < 0)
+                throw new NoSuchElementException();
+            Object[] elementData = ArrayList.this.elementData;
+            if (i >= elementData.length)
+                throw new ConcurrentModificationException();
+            cursor = i;
+            return (E) elementData[lastRet = i];
+        }
+
+        public void set(E e) {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            try {
+                MyArrayList.this.set(lastRet, e);
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+
+        public void add(E e) {
+            try {
+                int i = cursor;
+                MyArrayList.this.add(i, e);
+                cursor = i + 1;
+                lastRet = -1;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
         }
     }
 
-/**
-* {@inheritDoc}
-*/
-
-    @Override
-    public int size() {
-        return this.size;
-    }
-    @Override
-    public Object[] toArray() {
-        return Arrays.copyOf(elements, size);
-    }
-    @Override
-    public <T> T[] toArray(T[] a) {
-        if (a.length < this.size)
-            return (T[]) Arrays.copyOf(this.elements, this.size, a.getClass());
-        System.arraycopy(this.elements, 0, a, 0, this.size);
-        if (a.length > this.size)
-            a[size] = null;
-
-        return a;
-    }
-    @Override
-    public boolean add(E e) {
-        this.ensureCapacity(size + 1);
-        this.elements[size++] = e;
-        return true;
-    }
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        this.ensureCapacity(size + c.size());
-        for (E element : c) {
-            this.elements[size++] = element;
-        }
-        return true;
-    }
-    private void grow(int minCapacity) {
-        long newCapacity = Math.max(minCapacity, ((this.elements.length * 3L) / 2 + 1));
-        if (newCapacity > MAX_CAPACITY) {
-            newCapacity = MAX_CAPACITY;
-        }
-
-        Object[] copy = new Object[(int) newCapacity];
-        System.arraycopy(this.elements, 0, copy, 0, this.size);
-
-        this.elements = copy;
-    }
-    @Override
     public List<E> subList(int fromIndex, int toIndex) {
-        throw new NotImplementedException();
-    }
 
+    }
+    private class SubList extends AbstractList<E> implements RandomAccess {
+        public ListIterator<E> listIterator(final int index) {
+        }
+    }
 }
 
