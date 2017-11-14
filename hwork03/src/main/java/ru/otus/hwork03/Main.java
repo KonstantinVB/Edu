@@ -1,6 +1,5 @@
 package ru.otus.hwork03;
 
-//import java.util.List;
 import java.util.Collections;
 
 public class Main {
