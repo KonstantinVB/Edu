@@ -2,7 +2,7 @@ package ru.otus.hwork04;
 
 import java.util.ArrayList;
 
-/**
+/*
  * Создаем объекты и заполняем память
  */
 public class Benchmark {
@@ -17,13 +17,13 @@ public class Benchmark {
         final ArrayList<String> list = new ArrayList<>(this.size);
         while (true) {
             for (int i = 0; i < this.size; i++) {
-                list.add(new String(new char[500]));
+                list.add(new String(new char[200]));
             }
             for (int i = 0; i < this.size / 2; i++) {
                 list.remove(i);
             }
 
-            Thread.sleep(100);
+            Thread.sleep(50);
         }
     }
 }
