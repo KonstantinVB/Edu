@@ -1,5 +1,6 @@
 package ru.otus.hwork03;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.*;
 
 /*
@@ -7,77 +8,99 @@ import java.util.*;
  */
 public class MyArrayList<E> implements List<E>
 {
-    private static final Object[] EMPTY_ELEMENTDATA = {};
-    transient Object[] elementData; // non-private to simplify nested class access
-    private int size;
-    /*
-     * Constructs an empty list.
-     */
-    public MyArrayList() {
-        this.elementData = EMPTY_ELEMENTDATA;
-    }
-    /*
-     * Constructs an empty list with the specified initial capacity.
-     */
+    private int size = 0;
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 64;
+    transient Object[] el;
+    private static final Object[] EMPTY_EL = {};
+
     public MyArrayList(int initialCapacity) {
         if (initialCapacity > 0) {
-            this.elementData = new Object[initialCapacity];
+            this.el = new Object[initialCapacity];
+            size = el.length;
         } else if (initialCapacity == 0) {
-            this.elementData = EMPTY_ELEMENTDATA;
+            this.el = EMPTY_EL;
         } else {
             throw new IllegalArgumentException("Illegal Capacity: "+
                     initialCapacity);
         }
     }
-    /**
-     * Constructs a list containing the elements of the specified
-     * collection, in the order they are returned by the collection's
-     * iterator.
-     */
-    public MyArrayList(Collection<? extends E> c) {
-        elementData = c.toArray();
-        if ((size = elementData.length) != 0) {
-            // c.toArray might (incorrectly) not return Object[] (see 6260652)
-            if (elementData.getClass() != Object[].class)
-                elementData = Arrays.copyOf(elementData, size, Object[].class);
-        } else {
-            // replace with empty array.
-            this.elementData = EMPTY_ELEMENTDATA;
-        }
+
+    public MyArrayList() {
+        this.el = EMPTY_EL;
     }
+
+    private void rangeCheck(int index) {
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException("called index not in array size");
+    }
+
+    private void ensureExplicitCapacity(int minCapacity) {
+        if (minCapacity - el.length > 0)
+            grow(minCapacity);
+    }
+
+    private void grow(int minCapacity) {
+        int oldCapacity = el.length;
+        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        if (newCapacity - minCapacity < 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE > 0)
+            newCapacity = hugeCapacity(minCapacity);
+        el = Arrays.copyOf(el, newCapacity);
+    }
+
+    private static int hugeCapacity(int minCapacity) {
+        if (minCapacity < 0) // overflow
+            throw new OutOfMemoryError();
+        return (minCapacity > MAX_ARRAY_SIZE) ?
+                Integer.MAX_VALUE :
+                MAX_ARRAY_SIZE;
+    }
+
+    @Override
+    public int size() {
+        return this.size;
+    }
+
+    @Override
+    public boolean add(E e) {
+        ensureExplicitCapacity(size + 1);
+        el[size++] = e;
+        return true;
+    }
+
+    @Override
+    public E get(int index) {
+        rangeCheck(index);
+        return (E) el[index];
+    }
+
+    @Override
+    public E set(int index, E element) {
+        rangeCheck(index);
+        E oldValue = (E) el[index];
+        el[index] = element;
+        return oldValue;
+    }
+
+    @Override
     public ListIterator<E> listIterator(int index) {
-        if (index < 0 || index > size)
-            throw new IndexOutOfBoundsException("Index: "+index);
+        rangeCheck(index);
         return new ListItr(index);
     }
-    private class ListItr extends Itr implements ListIterator<E> {
+
+    @Override
+    public ListIterator<E> listIterator() {
+        return new ListItr(0);
+    }
+
+    private class ListItr implements ListIterator<E> {
+        int lastRet = -1;
+        int cursor;
+
         ListItr(int index) {
             super();
             cursor = index;
-        }
-
-        public boolean hasPrevious() {
-            return cursor != 0;
-        }
-
-        public int nextIndex() {
-            return cursor;
-        }
-
-        public int previousIndex() {
-            return cursor - 1;
-        }
-
-        @SuppressWarnings("unchecked")
-        public E previous() {
-            int i = cursor - 1;
-            if (i < 0)
-                throw new NoSuchElementException();
-            Object[] elementData = ArrayList.this.elementData;
-            if (i >= elementData.length)
-                throw new ConcurrentModificationException();
-            cursor = i;
-            return (E) elementData[lastRet = i];
         }
 
         public void set(E e) {
@@ -90,24 +113,138 @@ public class MyArrayList<E> implements List<E>
             }
         }
 
-        public void add(E e) {
-            try {
-                int i = cursor;
-                MyArrayList.this.add(i, e);
-                cursor = i + 1;
-                lastRet = -1;
-            } catch (IndexOutOfBoundsException ex) {
+        public E next() {
+            int i = cursor;
+            if (i >= size)
+                throw new NoSuchElementException();
+            Object[] elementData = MyArrayList.this.el;
+            if (i >= elementData.length)
                 throw new ConcurrentModificationException();
-            }
+            cursor = i + 1;
+            return (E) elementData[lastRet = i];
+        }
+
+// Not implemented Objects of listIterator
+        @Override
+        public void add(E e) {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public void remove() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public int previousIndex() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public int nextIndex() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public E previous() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public boolean hasNext() {
+            throw new NotImplementedException();
         }
     }
 
+    @Override
+    public Object[] toArray() {
+        return Arrays.copyOf(el, size);
+    }
+
+// Not implemented Objects of MyArrayList
+
+    @Override
     public List<E> subList(int fromIndex, int toIndex) {
-
+        throw new NotImplementedException();
     }
-    private class SubList extends AbstractList<E> implements RandomAccess {
-        public ListIterator<E> listIterator(final int index) {
-        }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public E remove(int index) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void add(int index, E element) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void clear() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends E> c) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        throw new NotImplementedException();
     }
 }
-
