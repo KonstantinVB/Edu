@@ -13,27 +13,18 @@ public class Main {
 //Проверяем добавление
         boolean b = Collections.addAll(arrlist,instr);
         System.out.print(arrlist.size()+"-el array has been written by addAll: ");
-        for (int i=0; i<arrlist.size(); i++) {
-            System.out.print(arrlist.get(i));
-            if (i+1<arrlist.size()) {System.out.print(", ");}
-        }
+        System.out.print(arrlist.toString());
         System.out.println();
 //Проверяем копирование
         MyArrayList<String> arrlistN = new MyArrayList<String>(arrlist.size());
         Collections.copy(arrlistN,arrlist);
         System.out.print(arrlistN.size()+"-el array has been written by copy:   ");
-        for (int i=0; i<arrlistN.size(); i++) {
-            System.out.print(arrlistN.get(i));
-            if (i+1<arrlist.size()) {System.out.print(", ");}
-        }
+        System.out.print(arrlistN.toString());
         System.out.println();
 //Проверяем сортировку
         Collections.sort(arrlistN, naturalOrder());
         System.out.print(arrlistN.size()+"-el array has been ordered by sort:   ");
-        for (int i=0; i<arrlistN.size(); i++) {
-            System.out.print(arrlistN.get(i));
-            if (i+1<arrlist.size()) {System.out.print(", ");}
-        }
+        System.out.print(arrlistN.toString());
         System.out.println();
     }
 }

@@ -166,6 +166,10 @@ public class MyArrayList<E> implements List<E>
         return Arrays.copyOf(el, size);
     }
 
+    public String toString() {
+        return Arrays.toString(this.el);
+    }
+
 // Not implemented Objects of MyArrayList
 
     @Override
