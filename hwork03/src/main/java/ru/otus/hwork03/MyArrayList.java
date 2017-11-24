@@ -9,7 +9,7 @@ import java.util.*;
 public class MyArrayList<E> implements List<E>
 {
     private int size = 0;
-    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 64;
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     transient Object[] el;
     private static final Object[] EMPTY_EL = {};
 
@@ -40,8 +40,7 @@ public class MyArrayList<E> implements List<E>
     }
 
     private void grow(int minCapacity) {
-        int oldCapacity = el.length;
-        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        int newCapacity = el.length;
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
         if (newCapacity - MAX_ARRAY_SIZE > 0)
@@ -65,7 +64,7 @@ public class MyArrayList<E> implements List<E>
     @Override
     public boolean add(E e) {
         ensureExplicitCapacity(size + 1);
-        el[size++] = e;
+        this.el[size++] = e;
         return true;
     }
 
