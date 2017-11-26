@@ -16,7 +16,6 @@ public class MyArrayList<E> implements List<E>
     public MyArrayList(int initialCapacity) {
         if (initialCapacity > 0) {
             this.el = new Object[initialCapacity];
-            size = el.length;
         } else if (initialCapacity == 0) {
             this.el = EMPTY_EL;
         } else {
@@ -27,6 +26,16 @@ public class MyArrayList<E> implements List<E>
 
     public MyArrayList() {
         this.el = EMPTY_EL;
+    }
+
+    public MyArrayList(Collection<? extends E> c) {
+        el = c.toArray();
+        if ((size = el.length) != 0) {
+            if (el.getClass() != Object[].class)
+                el = Arrays.copyOf(el, size, Object[].class);
+        } else {
+            this.el = EMPTY_EL;
+        }
     }
 
     private void rangeCheck(int index) {
@@ -58,6 +67,12 @@ public class MyArrayList<E> implements List<E>
 
     @Override
     public int size() {
+
+        for(int i = size; i < el.length; i++) {
+            if (el[i] != null) {
+                size++;
+            }
+        }
         return this.size;
     }
 
@@ -92,14 +107,49 @@ public class MyArrayList<E> implements List<E>
     public ListIterator<E> listIterator() {
         return new ListItr(0);
     }
+    public Iterator<E> iterator() {
+        return new Itr();
+    }
 
-    private class ListItr implements ListIterator<E> {
-        int lastRet = -1;
-        int cursor;
+    private class Itr implements Iterator<E> {
+        int cursor;       // index of next element to return
+        int lastRet = -1; // index of last element returned; -1 if no such
 
+        Itr() {}
+
+        public boolean hasNext() {
+            return cursor != size;
+        }
+        public E next() {
+            int i = cursor;
+            if (i >= size)
+                throw new NoSuchElementException();
+            cursor = i + 1;
+            return (E) el[lastRet = i];
+        }
+
+    }
+    private class ListItr extends Itr implements ListIterator<E> {
         ListItr(int index) {
             super();
             cursor = index;
+        }
+
+        public boolean hasPrevious() {
+            return cursor != 0;
+        }
+
+        public int nextIndex() {
+            return cursor;
+        }
+
+        public int previousIndex() {
+            return cursor - 1;
+        }
+
+
+        public boolean hasNext() {
+            return cursor != size;
         }
 
         public void set(E e) {
@@ -110,17 +160,6 @@ public class MyArrayList<E> implements List<E>
             } catch (IndexOutOfBoundsException ex) {
                 throw new ConcurrentModificationException();
             }
-        }
-
-        public E next() {
-            int i = cursor;
-            if (i >= size)
-                throw new NoSuchElementException();
-            Object[] elementData = MyArrayList.this.el;
-            if (i >= elementData.length)
-                throw new ConcurrentModificationException();
-            cursor = i + 1;
-            return (E) elementData[lastRet = i];
         }
 
 // Not implemented Objects of listIterator
@@ -135,27 +174,7 @@ public class MyArrayList<E> implements List<E>
         }
 
         @Override
-        public int previousIndex() {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public int nextIndex() {
-            throw new NotImplementedException();
-        }
-
-        @Override
         public E previous() {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public boolean hasPrevious() {
-            throw new NotImplementedException();
-        }
-
-        @Override
-        public boolean hasNext() {
             throw new NotImplementedException();
         }
     }
@@ -165,8 +184,20 @@ public class MyArrayList<E> implements List<E>
         return Arrays.copyOf(el, size);
     }
 
+    @Override
     public String toString() {
-        return Arrays.toString(this.el);
+        Iterator<E> it = iterator();
+        if (! it.hasNext())
+            return "[]";
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (;;) {
+            E e = it.next();
+            sb.append(e == this ? "(this Collection)" : e);
+            if (! it.hasNext())
+                return sb.append(']').toString();
+            sb.append(',').append(' ');
+        }
     }
 
 // Not implemented Objects of MyArrayList
@@ -233,11 +264,6 @@ public class MyArrayList<E> implements List<E>
 
     @Override
     public boolean remove(Object o) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public Iterator<E> iterator() {
         throw new NotImplementedException();
     }
 

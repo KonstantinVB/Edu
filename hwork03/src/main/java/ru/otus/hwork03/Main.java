@@ -1,5 +1,6 @@
 package ru.otus.hwork03;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import static java.util.Comparator.naturalOrder;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class Main {
         System.out.print(arrlist.toString());
         System.out.println();
 //Проверяем копирование
-        MyArrayList<String> arrlistN = new MyArrayList<String>(arrlist.size());
+        MyArrayList<String> arrlistN = new MyArrayList<String>(arrlist);
         Collections.copy(arrlistN,arrlist);
         System.out.print(arrlistN.size()+"-el array has been written by copy:   ");
         System.out.print(arrlistN.toString());
