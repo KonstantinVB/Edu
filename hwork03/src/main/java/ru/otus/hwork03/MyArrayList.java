@@ -67,9 +67,13 @@ public class MyArrayList<E> implements List<E>
 
     @Override
     public boolean add(E e) {
-        ensureExplicitCapacity(size + 1);
-        this.el[size++] = e;
-        return true;
+        if (e != null) {
+            ensureExplicitCapacity(size + 1);
+            this.el[size++] = e;
+            return true;
+        } else {
+            throw new IllegalArgumentException("Illegal null element in " + size + " position");
+        }
     }
 
     @Override
