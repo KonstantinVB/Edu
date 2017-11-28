@@ -30,12 +30,7 @@ public class MyArrayList<E> implements List<E>
 
     public MyArrayList(Collection<? extends E> c) {
         el = c.toArray();
-        if ((size = el.length) != 0) {
-            if (el.getClass() != Object[].class)
-                el = Arrays.copyOf(el, size, Object[].class);
-        } else {
-            this.el = EMPTY_EL;
-        }
+        size = el.length;
     }
 
     private void rangeCheck(int index) {
@@ -67,12 +62,6 @@ public class MyArrayList<E> implements List<E>
 
     @Override
     public int size() {
-
-        for(int i = size; i < el.length; i++) {
-            if (el[i] != null) {
-                size++;
-            }
-        }
         return this.size;
     }
 
