@@ -9,26 +9,6 @@ public class Assert {
         } else success(result);
     }
 
-/*    public static void assertTrue(boolean expression){
-        if(!expression){
-            fail();
-        }
-    }
-
-    public static void assertTrue(String message, boolean expression){
-        if(!expression){
-            fail(message);
-        }
-    }
-
-    private static void fail(){
-        throw new AssertionError();
-    }
-
-    private static void fail(String message){
-        throw new AssertionError(message);
-    }
-*/
     private static void fail(Object result){
         try {
             throw new AssertionError(String.format("Unsuccessfull result:<%s>",result));
