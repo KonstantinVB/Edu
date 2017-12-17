@@ -97,9 +97,10 @@ public class MyRef {
         }
         for (Method testMethod : testMethods) {
             try {
-                beforeMethod.invoke(clas$.newInstance());
-                testMethod.invoke(clas$.newInstance());
-                afterMethod.invoke(clas$.newInstance());
+                Object testInstance = clas$.newInstance();
+                beforeMethod.invoke(testInstance);
+                testMethod.invoke(testInstance);
+                afterMethod.invoke(testInstance);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {

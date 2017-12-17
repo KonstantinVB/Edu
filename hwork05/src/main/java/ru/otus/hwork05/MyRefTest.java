@@ -1,9 +1,9 @@
 package ru.otus.hwork05;
 
 import ru.otus.hwork05.annotations.After;
+import ru.otus.hwork05.annotations.Assert;
 import ru.otus.hwork05.annotations.Before;
 import ru.otus.hwork05.annotations.Test;
-
 /*
  * tests
  */
@@ -23,24 +23,20 @@ public class MyRefTest {
 
     @Test
     public void instantiate() {
-        MyTestClass testClass = MyRef.instantiate(MyTestClass.class);
-        System.out.println("Instantiate Test completed");
+        Assert.assertEquals(MyTestClass.class, MyRef.instantiate(MyTestClass.class).getClass());
     }
 
     @Test
     public void getFieldValue() {
         MyTestClass test = new MyTestClass(1, "A");
-        System.out.println("getFieldValue Test completed with values: "
-                +MyRef.getFieldValue(test, "a")+";"
-                +MyRef.getFieldValue(test, "s"));
+        Assert.assertEquals(1, test.getA());
+        Assert.assertEquals("A", test.getS());
     }
 
     @Test
     public void setFieldValue() {
         MyTestClass test = new MyTestClass(2, "B");
         MyRef.setFieldValue(test, "s", "BB");
-        System.out.println("setFieldValue Test completed with values: "
-                +MyRef.getFieldValue(test, "a")+";"
-                +MyRef.getFieldValue(test, "s"));
+        Assert.assertEquals("BB", test.getS());
     }
 }
