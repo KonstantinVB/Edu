@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import java.util.Collection;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -49,20 +50,30 @@ public class MyWriter {
 
     }
 
-    private static String putObjectToJson(Object putObject) {
+    private static JSONObject objToJSONObject(Object objToJSON) {
         JSONObject obj = new JSONObject();
-        Field[] arrOffields = putObject.getClass().getDeclaredFields();
+        Field[] arrOffields = objToJSON.getClass().getDeclaredFields();
         for (Field field : arrOffields) {
             try {
                 field.setAccessible(true);
-                obj.put(field.getName(),field.get(putObject));
+                Class cla$$ = field.get(objToJSON).getClass();
+                if ((cla$$.getSuperclass().equals(Object.class)) && !(cla$$.equals(String.class)) && !(cla$$.equals(Character.class))) {
+                    obj.put(field.getName(),objToJSONObject(field.get(objToJSON)));
+                } else {
+                    obj.put(field.getName(),field.get(objToJSON));
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 field.setAccessible(false);
             }
         }
-        return obj.toString();
+        return obj;
+    }
+
+    private static String putObjectToJson(Object putObject) {
+        JSONObject obj = objToJSONObject(putObject);
+        return obj.toJSONString();
     }
 
     private static String putArrayToJson(Object putArray) {

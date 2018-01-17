@@ -12,7 +12,7 @@ public class MyWriterTest {
     @Test
     public void stringToJson() {
         final String testString = "Test String for JSON";
-        System.out.println(String.format("Serialized Object is String: %s",this.gson.toJson(testString)));
+        System.out.println(String.format("String to JSON: %s",this.gson.toJson(testString)));
         assertEquals(this.gson.toJson(testString), this.myWriter.toJson(testString));
     }
     @Test
@@ -25,21 +25,21 @@ public class MyWriterTest {
         final double testDouble = 3.5e+38;
         final boolean testBoolean = true;
         final char testChar = 'h';
-        System.out.println(String.format("Serialized Object is byte: %s",this.gson.toJson(testByte)));
+        System.out.println(String.format("byte to JSON: %s",this.gson.toJson(testByte)));
         assertEquals(this.gson.toJson(testByte), this.myWriter.toJson(testByte));
-        System.out.println(String.format("Serialized Object is short: %s",this.gson.toJson(testShort)));
+        System.out.println(String.format("short to JSON: %s",this.gson.toJson(testShort)));
         assertEquals(this.gson.toJson(testShort), this.myWriter.toJson(testShort));
-        System.out.println(String.format("Serialized Object is int: %s",this.gson.toJson(testInt)));
+        System.out.println(String.format("int to JSON: %s",this.gson.toJson(testInt)));
         assertEquals(this.gson.toJson(testInt), this.myWriter.toJson(testInt));
-        System.out.println(String.format("Serialized Object is long: %s",this.gson.toJson(testLong)));
+        System.out.println(String.format("long to JSON: %s",this.gson.toJson(testLong)));
         assertEquals(this.gson.toJson(testLong), this.myWriter.toJson(testLong));
-        System.out.println(String.format("Serialized Object is float: %s",this.gson.toJson(testFloat)));
+        System.out.println(String.format("float to JSON: %s",this.gson.toJson(testFloat)));
         assertEquals(this.gson.toJson(testFloat), this.myWriter.toJson(testFloat));
-        System.out.println(String.format("Serialized Object is double: %s",this.gson.toJson(testDouble)));
+        System.out.println(String.format("double to JSON: %s",this.gson.toJson(testDouble)));
         assertEquals(this.gson.toJson(testDouble), this.myWriter.toJson(testDouble));
-        System.out.println(String.format("Serialized Object is boolean: %s",this.gson.toJson(testBoolean)));
+        System.out.println(String.format("boolean to JSON: %s",this.gson.toJson(testBoolean)));
         assertEquals(this.gson.toJson(testBoolean), this.myWriter.toJson(testBoolean));
-        System.out.println(String.format("Serialized Object is char: %s",this.gson.toJson(testChar)));
+        System.out.println(String.format("char to JSON: %s",this.gson.toJson(testChar)));
         assertEquals(this.gson.toJson(testChar), this.myWriter.toJson(testChar));
     }
     @Test
@@ -56,22 +56,22 @@ public class MyWriterTest {
                 true,
                 null
         };
-        System.out.println(String.format("Serialized Object is array of Primitives: %s",this.gson.toJson(testArray)));
+        System.out.println(String.format("Array of Primitives to JSON: %s",this.gson.toJson(testArray)));
         assertEquals(this.gson.toJson(testArray), this.myWriter.toJson(testArray));
     }
     @Test
     public void objectToJson() {
-        final MyObject testObject = new MyObject (1,"a");
-        System.out.println(String.format("Serialized Object is: %s",this.gson.toJson(testObject)));
+        final MyObject testObject = new MyObject ();//(1,"a");
+        System.out.println(String.format("Object to JSON: %s",this.gson.toJson(testObject)));
         assertEquals(this.gson.toJson(testObject), this.myWriter.toJson(testObject));
     }
     @Test
     public void objArrayToJson() {
         final Object[] testObjArray = new Object[] {
-            new MyObject (1,"a"),
-            new MyObject (2,"b"),
-            new MyObject (3,"c")};
-        System.out.println(String.format("Serialized Object is array of Objects: %s",this.gson.toJson(testObjArray)));
+            new MyObject (),//(1,"a"),
+            new MyObject (),//(2,"b"),
+            new MyObject ()};//(3,"c")};
+        System.out.println(String.format("Array of Objects to JSON: %s",this.gson.toJson(testObjArray)));
         assertEquals(this.gson.toJson(testObjArray), this.myWriter.toJson(testObjArray));
     }
     @Test
@@ -88,7 +88,7 @@ public class MyWriterTest {
                 true,
                 null
         );
-        System.out.println(String.format("Serialized Object is List: %s",this.gson.toJson(testList)));
+        System.out.println(String.format("List to JSON: %s",this.gson.toJson(testList)));
         assertEquals(this.gson.toJson(testList), this.myWriter.toJson(testList));
     }
     @Test
@@ -104,7 +104,7 @@ public class MyWriterTest {
         testMap.put(8,'h');
         testMap.put(9,true);
         testMap.put(10,null);
-        System.out.println(String.format("Serialized Object is Map: %s",this.gson.toJson(testMap)));
+        System.out.println(String.format("Map to JSON: %s",this.gson.toJson(testMap)));
         assertEquals(this.gson.toJson(testMap), this.myWriter.toJson(testMap));
     }
     @Test
@@ -120,7 +120,7 @@ public class MyWriterTest {
         testSet.add('h');
         testSet.add(true);
         testSet.add(null);
-        System.out.println(String.format("Serialized Object is Set: %s",this.gson.toJson(testSet)));
+        System.out.println(String.format("Set to JSON: %s",this.gson.toJson(testSet)));
         assertEquals(this.gson.toJson(testSet), this.myWriter.toJson(testSet));
     }
 }
