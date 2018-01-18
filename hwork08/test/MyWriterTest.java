@@ -68,9 +68,9 @@ public class MyWriterTest {
     @Test
     public void objArrayToJson() {
         final Object[] testObjArray = new Object[] {
-            new MyObject (),//(1,"a"),
-            new MyObject (),//(2,"b"),
-            new MyObject ()};//(3,"c")};
+                new MyObject (),//(1,"a"),
+                new MyObject (),//(2,"b"),
+                new MyObject ()};//(3,"c")};
         System.out.println(String.format("Array of Objects to JSON: %s",this.gson.toJson(testObjArray)));
         assertEquals(this.gson.toJson(testObjArray), this.myWriter.toJson(testObjArray));
     }
