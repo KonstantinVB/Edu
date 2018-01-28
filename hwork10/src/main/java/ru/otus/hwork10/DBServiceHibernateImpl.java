@@ -62,22 +62,9 @@ public class DBServiceHibernateImpl implements DBService {
     }
 
     public void drop() {
-        try (Session session = sessionFactory.openSession()) {
-            SchemaExport export = new SchemaExport();
-            MetadataSources metadataSources = new MetadataSources(new BootstrapServiceRegistryBuilder().build());
-            StandardServiceRegistry sr = session.getSessionFactory().getSessionFactoryOptions().getServiceRegistry();
-            Metadata metadata = metadataSources.buildMetadata(sr);
-            export.drop(EnumSet.of(TargetType.DATABASE),metadata);
-        }
     }
 
     public void create() {
-        try (Session session = sessionFactory.openSession()) {
-            SchemaExport export = new SchemaExport();
-            MetadataSources metadataSources = new MetadataSources(new BootstrapServiceRegistryBuilder().build());
-            StandardServiceRegistry sr = session.getSessionFactory().getSessionFactoryOptions().getServiceRegistry();
-            Metadata metadata = metadataSources.buildMetadata(sr);
-            export.create(EnumSet.of(TargetType.DATABASE), metadata);        }
     }
 
     public <T extends DataSet> void insert(T dataSet) {
