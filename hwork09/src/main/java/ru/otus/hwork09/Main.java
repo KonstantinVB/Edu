@@ -31,8 +31,7 @@ public class Main {
             executor.insert(uds);
         }
         System.out.println(executor.select(3L, UserDataSet.class));
-        uds= new UserDataSet();
-        System.out.println(executor.selectAll(uds));
+        System.out.println(executor.selectAll(UserDataSet.class));
         System.out.println("To drop DataSet from DB press Y else press N:");
         Scanner in = new Scanner(System.in);
         if (in.next().toString().equals("Y")) {

@@ -77,7 +77,7 @@ public class MyExecutor {
             }
             statement.executeUpdate();
             statement.close();
-        } catch (SQLException | IllegalAccessException e) {
+        } catch (SQLException  | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -107,11 +107,11 @@ public class MyExecutor {
         }
     }
 
-    public <T extends DataSet> List<Map<String, Object>> selectAll(T entity) {
+    public <T extends DataSet> List<Map<String, Object>> selectAll(Class<T> entityClass) {
         List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
         String query;
         PreparedStatement statement;
-        String tableName = entity.getClass().getAnnotation(Table.class).name();
+        String tableName = entityClass.getAnnotation(Table.class).name();
         try {
             query = "select * from " + tableName;
             statement = connection.prepareStatement(query);
