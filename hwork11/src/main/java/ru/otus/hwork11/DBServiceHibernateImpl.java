@@ -174,18 +174,4 @@ public class DBServiceHibernateImpl implements DBService {
         }
     }
 
-    public LinkedHashMap<String, Field> getColumnFields(Class<?> clazz) {
-        LinkedHashMap<String, Field> fields = new LinkedHashMap<>();
-        Class<?> c = clazz;
-        while (!c.equals(Object.class)) {
-            for (Field field : c.getDeclaredFields()) {
-                if (field.isAnnotationPresent(Column.class)) {
-                    fields.put(field.getAnnotation(Column.class).name(), field);
-                }
-            }
-            c = c.getSuperclass();
-        }
-        return fields;
-    }
-
 }
