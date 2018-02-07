@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Main {
-    private static final long WORK_TIME_MS = TimeUnit.MINUTES.toMillis(5);
+    private static final long WORK_TIME_MS = TimeUnit.MINUTES.toMillis(10);
     private static final long STEP_TIME_MS = TimeUnit.SECONDS.toMillis(5);
 
     public static void main(String... args) throws InterruptedException {

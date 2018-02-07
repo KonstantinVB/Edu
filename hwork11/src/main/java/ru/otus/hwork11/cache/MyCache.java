@@ -30,10 +30,21 @@ public class MyCache<K, V> implements MyCacheMBean<K, V> {
     }
 
     public void setParams(int maxElements, long lifeTimeMs, long idleTimeMs, boolean isEternal) {
+        Map<K, SoftReference<MyCacheElement<V>>> tempElements = new LinkedHashMap<>();
+        tempElements.putAll(elements);
+        elements.clear();
         this.maxElements = maxElements;
         this.lifeTimeMs = lifeTimeMs > 0 ? lifeTimeMs : 0;
         this.idleTimeMs = idleTimeMs > 0 ? idleTimeMs : 0;
         this.isEternal = lifeTimeMs == 0 && idleTimeMs == 0 || isEternal;
+        tempElements.forEach((K, V)->{
+            SoftReference<MyCacheElement<V>> elementReference = elements.get(K);
+            try {
+                MyCacheElement<V> element = elementReference.get();
+                this.put(K,element.getValue());
+            } catch (NullPointerException e) {}
+        });
+        tempElements.clear();
     }
 
     public void put(K key, V value) {
@@ -61,12 +72,16 @@ public class MyCache<K, V> implements MyCacheMBean<K, V> {
 
     public V get(K key) {
         SoftReference<MyCacheElement<V>> elementReference = elements.get(key);
-
         if (elementReference != null) {
-            MyCacheElement<V> element = elementReference.get();
-            element.setAccessed();
-            hit++;
-            return element.getValue();
+            try {
+                MyCacheElement<V> element = elementReference.get();
+                element.setAccessed();
+                hit++;
+                return element.getValue();
+            } catch (NullPointerException e) {
+                miss++;
+                return null;
+            }
         } else {
             miss++;
             return null;
