@@ -12,6 +12,8 @@ public interface MyCacheMBean<K, V> {
 
     int getMissCount();
 
+    int getmaxElements();
+
     void dispose();
 
 }

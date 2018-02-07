@@ -12,7 +12,11 @@ import ru.otus.hwork11.cache.MyCache;
 import ru.otus.hwork11.cache.MyCacheMBean;
 
 import javax.management.*;
+import javax.persistence.Column;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
 
@@ -87,7 +91,8 @@ public class DBServiceHibernateImpl implements DBService {
             DAOHiber dao = new DAOHiber(session);
             dao.save(dataSet);
             transaction.commit();
-            myCache.put(String.valueOf(dataSet.getId()).hashCode(), dataSet);
+            Integer hashId=(String.valueOf(dataSet.getId())+dataSet.getClass().getName()).hashCode();
+            myCache.put(hashId, dataSet);
         }
     }
 
@@ -97,6 +102,11 @@ public class DBServiceHibernateImpl implements DBService {
             DAOHiber dao = new DAOHiber(session);
             dao.update(nameOfFieldSeek,valOfFieldSeek,nameOfFieldSet, valOfFieldSet, dataSetClass);
             transaction.commit();
+            List<T> DSlist;
+            DSlist = dao.readAll(dataSetClass);
+            DSlist.forEach((T) -> {
+                myCache.put((String.valueOf(T.getId())+dataSetClass.getName()).hashCode(),T);
+            });
         }
     }
 
@@ -106,14 +116,18 @@ public class DBServiceHibernateImpl implements DBService {
             DAOHiber dao = new DAOHiber(session);
             dao.delete(nameOfField,valOfField,dataSetClass);
             transaction.commit();
+            List<T> DSlist;
+            DSlist = dao.readAll(dataSetClass);
+            DSlist.forEach((T) -> {
+                myCache.put((String.valueOf(T.getId())+dataSetClass.getName()).hashCode(),T);
+            });
         }
     }
 
     public <T extends DataSet> T select(long id, Class<T> dataSetClass) {
         return runInSession(session -> {
-            T refDS;
             Integer hashId=(String.valueOf(id)+dataSetClass.getName()).hashCode();
-            refDS = (T) myCache.get(hashId);
+            T refDS = (T) myCache.get(hashId);
             if (refDS == null) {
                 DAOHiber dao = new DAOHiber(session);
                 refDS = dao.read(id,dataSetClass);
@@ -125,23 +139,18 @@ public class DBServiceHibernateImpl implements DBService {
 
     public <T extends DataSet> T  selectByName(String nameOfField, String valOfField, Class<T> dataSetClass) {
         return runInSession(session -> {
-            T refDS;
-            Integer hashId=(nameOfField+valOfField+dataSetClass.getName()).hashCode();
-            refDS = (T) myCache.get(hashId);
-            if (refDS == null) {
-                DAOHiber dao = new DAOHiber(session);
-                refDS = dao.readByName(nameOfField, valOfField,dataSetClass);
-                myCache.put(hashId, refDS);
-            }
+            DAOHiber dao = new DAOHiber(session);
+            T refDS = dao.readByName(nameOfField, valOfField,dataSetClass);
+            Integer hashId=(String.valueOf(refDS.getId())+dataSetClass.getName()).hashCode();
+            myCache.put(hashId, refDS);
             return refDS;
         });
     }
 
     public <T extends DataSet> List<T> selectAll(Class<T> dataSetClass) {
         return runInSession(session -> {
-            List<T> DSlist;
             DAOHiber dao = new DAOHiber(session);
-            DSlist = dao.readAll(dataSetClass);
+            List<T> DSlist = dao.readAll(dataSetClass);
             DSlist.forEach((T) -> {
                 myCache.put((String.valueOf(T.getId())+dataSetClass.getName()).hashCode(),T);
             });
@@ -164,4 +173,19 @@ public class DBServiceHibernateImpl implements DBService {
             return result;
         }
     }
+
+    public LinkedHashMap<String, Field> getColumnFields(Class<?> clazz) {
+        LinkedHashMap<String, Field> fields = new LinkedHashMap<>();
+        Class<?> c = clazz;
+        while (!c.equals(Object.class)) {
+            for (Field field : c.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Column.class)) {
+                    fields.put(field.getAnnotation(Column.class).name(), field);
+                }
+            }
+            c = c.getSuperclass();
+        }
+        return fields;
+    }
+
 }

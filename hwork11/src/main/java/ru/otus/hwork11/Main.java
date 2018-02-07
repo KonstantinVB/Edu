@@ -55,9 +55,9 @@ public class Main {
             int i=0;
             while (System.currentTimeMillis() - startTime < WORK_TIME_MS) {
                 i++;
-                System.out.println(dbService.select(2, UserDataSet.class));
+                System.out.println(dbService.select(1, UserDataSet.class));
                 i++;
-                System.out.println(dbService.selectByName("name", "Vasya", UserDataSet.class));
+                System.out.println(dbService.select(2, UserDataSet.class));
                 Thread.sleep(STEP_TIME_MS);
             }
             System.out.println("Total count: "+i);

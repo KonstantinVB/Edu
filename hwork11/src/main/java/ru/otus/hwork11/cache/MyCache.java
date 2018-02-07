@@ -96,6 +96,10 @@ public class MyCache<K, V> implements MyCacheMBean<K, V> {
         return miss;
     }
 
+    public int getmaxElements() {
+        return maxElements;
+    }
+
     @Override
     public void dispose() {
         timer.cancel();
