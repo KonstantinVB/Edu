@@ -73,19 +73,15 @@ public class MyCache<K, V> implements MyCacheMBean<K, V> {
     public V get(K key) {
         SoftReference<MyCacheElement<V>> elementReference = elements.get(key);
         if (elementReference != null) {
-            try {
-                MyCacheElement<V> element = elementReference.get();
+            MyCacheElement<V> element = elementReference.get();
+            if (element!=null) {
                 element.setAccessed();
                 hit++;
                 return element.getValue();
-            } catch (NullPointerException e) {
-                miss++;
-                return null;
             }
-        } else {
-            miss++;
-            return null;
         }
+        miss++;
+        return null;
     }
 
     public int getHitCount() {
