@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cache Stat</title>
+    <script>
+        function refresh() {
+            location.reload();
+        }
+    </script>
+</head>
+<body onload='setInterval(function(){refresh()}, ${refreshPeriod} );'>
+<div class="top">
+    <a>This is MyCache Status Page</a>
+    <br/>
+    <img src="f3.jpg"/>
+    <br/>
+    <a href="login">Login</a> <a href="admin">Admin</a> <a href="timer">Timer</a>
+    <br/>
+    <a href="cachestat">MyCashe Status</a>
+</div>
+<p>Cache maxElements: ${maxElements}</p>
+<p>Cache lifeTimeMs: ${lifeTimeMs}</p>
+<p>Cache idleTimeMs: ${idleTimeMs}</p>
+<p>Cache isEternal: ${isEternal}</p>
+<p>Cache HitCount: ${HitCount}</p>
+<p>Cache Miss Count: ${MissCount}</p>
+</body>
+</html>
