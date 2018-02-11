@@ -29,7 +29,7 @@ public class Main {
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
-        context.addServlet(new ServletHolder(new LoginServlet("unknown", "",false)), "/login");
+        context.addServlet(new ServletHolder(new LoginServlet("unknown", false)), "/login");
         context.addServlet(AdminServlet.class, "/admin");
         context.addServlet(TimerServlet.class, "/timer");
         context.addServlet(CachestatServlet.class, "/cachestat");
