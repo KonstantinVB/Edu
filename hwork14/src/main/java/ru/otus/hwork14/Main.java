@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class Main {
     public static Queue <Integer> sortedArray = new PriorityQueue<>();
-    public static Integer ARRAY_SIZE = 10_000;
+    public static Integer ARRAY_SIZE = 100_000;
     public static Integer THREAD_COUNT = 4;
     public static Long spentTime = System.currentTimeMillis();
     public static int[] unsortedArray = new int[ARRAY_SIZE];
@@ -24,8 +24,13 @@ public class Main {
         fillArray(sortedArray);
         List <Thread> threadList = new ArrayList<>();
         for (int i =0; i < THREAD_COUNT; i++) {
-            Integer procLen = ARRAY_SIZE/THREAD_COUNT;
-            Integer startPos = procLen*i;
+            Integer startPos = (ARRAY_SIZE/THREAD_COUNT)*i;
+            Integer procLen;
+            if ((i+1)==THREAD_COUNT) {
+                procLen = ARRAY_SIZE-startPos;
+            } else {
+                procLen = ARRAY_SIZE/THREAD_COUNT;
+            }
             threadList.add(i,new Thread(() -> {
                 sortWorker(startPos,procLen);
             }));
