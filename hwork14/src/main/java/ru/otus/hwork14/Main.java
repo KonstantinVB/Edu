@@ -15,8 +15,8 @@ import java.util.Arrays;
 
 public class Main {
     public static Queue <Integer> sortedArray = new PriorityQueue<>();
-    public static Integer ARRAY_SIZE = 100_000;
-    public static Integer THREAD_COUNT = 4;
+    public static Integer ARRAY_SIZE = 100;
+    public static Integer THREAD_COUNT =4;
     public static Long spentTime = System.currentTimeMillis();
     public static int[] unsortedArray = new int[ARRAY_SIZE];
 
@@ -55,6 +55,7 @@ public class Main {
             text = text+unsortedArray.length+" sorted elements";
         }
         System.out.println(Arrays.toString(unsortedArray)+"/"+text);
+//        System.out.println(text);
     }
 
     private static void sortWorker(Integer startPos, Integer procLen) {
