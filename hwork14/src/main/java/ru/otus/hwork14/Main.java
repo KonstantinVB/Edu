@@ -6,19 +6,49 @@ package ru.otus.hwork14;
 */
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
-    private static Long spentTime = System.currentTimeMillis();
-    private static Integer ARRAY_SIZE = 100_000;
-    private static Integer THREAD_COUNT=4;
+    private static int ARRAY_SIZE = 100;
+    public static int THREAD_COUNT = 4;
+    public static Integer[] nextElements = new Integer[THREAD_COUNT];
+    public static int[] myArray = new int[ARRAY_SIZE];
+    public static AtomicInteger counter = new AtomicInteger(0);
 
-    public static void main(String... args) throws InterruptedException, NoSuchMethodException {
-        MyArraySorter sorter = new MyArraySorter(ARRAY_SIZE,THREAD_COUNT);
-        sorter.runThreads(1);
-        System.out.println("Total "+String.valueOf(System.currentTimeMillis()-spentTime)+" ms ");
-        sorter.runThreads(2);
-        System.out.println("Total "+String.valueOf(System.currentTimeMillis()-spentTime)+" ms ");
+    public static void main(String... args) throws InterruptedException {
+        Long spentTime = System.currentTimeMillis();
+        List<Thread> threadList;
+//Fill new array
+        threadList = new MyThreadsFactory().getThreads(new MyArrayCreator(myArray),THREAD_COUNT);
+        for (int i =0; i < THREAD_COUNT; i++) {
+            threadList.get(i).start();
+        }
+        for (int i =0; i < THREAD_COUNT; i++) {
+            threadList.get(i).join();
+        }
+        System.out.println(Arrays.toString(myArray));
+        System.out.println("Total time "+String.valueOf(System.currentTimeMillis()-spentTime)+" ms ");
+//Sort array partitions
+        threadList = new MyThreadsFactory().getThreads(new MyArraySorter(myArray),THREAD_COUNT);
+        for (int i =0; i < THREAD_COUNT; i++) {
+            threadList.get(i).start();
+        }
+        for (int i =0; i < THREAD_COUNT; i++) {
+            threadList.get(i).join();
+        }
+        System.out.println(Arrays.toString(myArray));
+        System.out.println("Total time "+String.valueOf(System.currentTimeMillis()-spentTime)+" ms ");
+//Merge sorted partitions and write them into recreated array
+        threadList = new MyThreadsFactory().getThreads(new MyArrayMerger(myArray),THREAD_COUNT);
+        myArray = new int[ARRAY_SIZE];
+        for (int i =0; i < THREAD_COUNT; i++) {
+            threadList.get(i).start();
+        }
+        for (int i =0; i < THREAD_COUNT; i++) {
+            threadList.get(i).join();
+        }
+        System.out.println(Arrays.toString(myArray));
+        System.out.println("Total time "+String.valueOf(System.currentTimeMillis()-spentTime)+" ms ");
     }
 
 }
