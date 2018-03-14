@@ -1,23 +1,23 @@
 package ru.otus.hwork14;
 
-import static ru.otus.hwork14.Main.THREAD_COUNT;
-
 public class MyArraySorter implements MyWorker {
     private int[] inArray;
+    private int threadCount;
 
-    public MyArraySorter(int[] myArray){
+    public MyArraySorter(int[] myArray, int threadCount){
         this.inArray=myArray;
+        this.threadCount=threadCount;
     }
 
     @Override
     public void run(int i) {
         int arrLength = inArray.length;
-        int startPos = (arrLength / THREAD_COUNT) * i;
+        int startPos = (arrLength / threadCount) * i;
         int procLen;
-        if ((i + 1) == THREAD_COUNT) {
+        if ((i + 1) == threadCount) {
             procLen = arrLength - startPos;
         } else {
-            procLen = arrLength / THREAD_COUNT;
+            procLen = arrLength / threadCount;
         }
         sortWorker(startPos,procLen);
         System.out.println("Sorted by "+Thread.currentThread().getName());

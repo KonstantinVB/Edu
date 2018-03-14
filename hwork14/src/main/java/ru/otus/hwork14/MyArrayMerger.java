@@ -1,62 +1,60 @@
 package ru.otus.hwork14;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import static ru.otus.hwork14.Main.myArray;
-import static ru.otus.hwork14.Main.THREAD_COUNT;
-import static ru.otus.hwork14.Main.nextElements;
-import static ru.otus.hwork14.Main.counter;
+public class MyArrayMerger {
+    private int[] inArray;
+    private int threadCount;
+    private int arraySize;
 
-public class MyArrayMerger implements MyWorker {
-    int[] inArray;
-
-    public MyArrayMerger(int[] myArray){
+    public MyArrayMerger(int[] myArray, int threadCount, int arraySize){
         this.inArray=myArray;
+        this.threadCount=threadCount;
+        this.arraySize=arraySize;
     }
 
-    @Override
-    public void run(int i) {
-        int arrLength = inArray.length;
-        int startPos = (arrLength / THREAD_COUNT) * i;
-        int procLen;
-        if ((i + 1) == THREAD_COUNT) {
-            procLen = arrLength - startPos;
-        } else {
-            procLen = arrLength / THREAD_COUNT;
+    public void run() {
+        Integer[] nextElements = new Integer[threadCount];
+        List<int[]> partArray = new ArrayList<>(threadCount);
+        for (int i=0; i < threadCount; i++) {
+            int startPos = (arraySize / threadCount) * i;
+            int procLen;
+            if ((i + 1) == threadCount) {
+                procLen = arraySize - startPos;
+            } else {
+                procLen = arraySize / threadCount;
+            }
+            nextElements[i]=inArray[startPos];
+            partArray.add(i, Arrays.copyOfRange(inArray, startPos+1, startPos + procLen));
         }
-        int[] partArray = Arrays.copyOfRange(inArray,startPos,startPos+procLen);
-        for (int j = 0; j < partArray.length; j++) synchronized (nextElements) {
-            nextElements[i] = partArray[j];
-            while (minIndex()!=i) {
-                try {
-                    nextElements.notifyAll();
-                    nextElements.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+        for (int i=0; i<arraySize; i++) {
+            int pointer = minIndex(nextElements);
+            inArray[i]=nextElements[pointer];
+            if (partArray.get(pointer).length > 0) {
+                nextElements[pointer]=partArray.get(pointer)[0];
+                partArray.set(pointer,Arrays.copyOfRange(partArray.get(pointer),1,partArray.get(pointer).length));
+            } else {
+                nextElements[pointer]=null;
             }
-            if (minIndex()==i) {
-                myArray[counter.getAndIncrement()] = partArray[j];
-            }
-            if (j==partArray.length-1) {
-                nextElements[i] = inArray.length+1;
-            }
-            nextElements.notifyAll();
         }
-        System.out.println("Merged by "+Thread.currentThread().getName());
+        System.out.println("Merged");
     }
 
-    private int minIndex() {
-        int indexOfMin = 0;
-        boolean hasNull=false;
+    private int minIndex(Integer[] nextElements) {
+        int indexOfMin=0;
         for (int i = 1; i < nextElements.length; i++) {
-            if (nextElements[i]!=null&&nextElements[indexOfMin]!=null) {
+            if (nextElements[indexOfMin] == null) {
+                indexOfMin=i;
+            } else if (nextElements[i] != null) {
                 if (nextElements[i] < nextElements[indexOfMin]) {
                     indexOfMin = i;
                 }
-            } else hasNull=true;
+            }
         }
-        if (hasNull) {return nextElements.length;} else {return indexOfMin;}
+        return indexOfMin;
     }
 
 }

@@ -2,23 +2,23 @@ package ru.otus.hwork14;
 
 import java.util.Random;
 
-import static ru.otus.hwork14.Main.THREAD_COUNT;
-
 public class MyArrayCreator implements MyWorker{
     private int[] inArray;
+    private int threadCount;
 
-    public MyArrayCreator (int[] myArray){
+    public MyArrayCreator (int[] myArray, int threadCount){
         this.inArray=myArray;
+        this.threadCount=threadCount;
     }
 
     public void run(int i) {
         int arrLength = inArray.length;
-        int startPos = (arrLength / THREAD_COUNT) * i;
+        int startPos = (arrLength / threadCount) * i;
         int procLen;
-        if ((i + 1) == THREAD_COUNT) {
+        if ((i + 1) == threadCount) {
             procLen = arrLength - startPos;
         } else {
-            procLen = arrLength / THREAD_COUNT;
+            procLen = arrLength / threadCount;
         }
         fillWorker(startPos,procLen);
         System.out.println("Originated by "+Thread.currentThread().getName());
