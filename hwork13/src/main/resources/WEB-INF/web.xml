@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app>
+
+    <display-name>homework13</display-name>
+    <description>war-file and dependency injection</description>
+
+    <servlet>
+        <servlet-name>adminServlet</servlet-name>
+        <servlet-class>ru.otus.servlet.AdminServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>cachestatServlet</servlet-name>
+        <servlet-class>ru.otus.servlet.CachestatServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>timerServlet</servlet-name>
+        <servlet-class>ru.otus.servlet.TimerServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>ru.otus.servlet.LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>adminServlet</servlet-name>
+        <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>cachestatServlet</servlet-name>
+        <url-pattern>/cachestat</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>timerServlet</servlet-name>
+        <url-pattern>/timer</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>loginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+</web-app>
