@@ -7,10 +7,8 @@ import ru.otus.DS.AddressDataSet;
 import ru.otus.DS.DataSet;
 import ru.otus.DS.PhoneDataSet;
 import ru.otus.DS.UserDataSet;
-
-import javax.management.*;
-import java.lang.management.ManagementFactory;
-
+import ru.otus.cache.MyCache;
+import ru.otus.cache.MyCacheMBean;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,11 +24,13 @@ public class CachestatServlet extends HttpServlet {
     private static final int PERIOD_MS = 1000;
     private static final long WORK_TIME_MS = TimeUnit.MINUTES.toMillis(10);
     private static final long STEP_TIME_MS = TimeUnit.SECONDS.toMillis(5);
-
     private DBServiceHibernateImpl dbService;
+
+    private MyCacheMBean<Integer, DataSet> myCache;
 
     public void init() {
         ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");
+        myCache = (MyCache) context.getBean("myCache");
         dbService = (DBServiceHibernateImpl) context.getBean("dbService");
         new Thread(() -> {
             try {
@@ -56,35 +56,15 @@ public class CachestatServlet extends HttpServlet {
         }
     }
 
-    private static Map<String, Object> getStat() {
+    private Map<String, Object> getStat() {
         final Map<String, Object> statParamVal = new HashMap<>();
-        final MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
         statParamVal.put("refreshPeriod", String.valueOf(PERIOD_MS));
-        statParamVal.put("maxElements",0);
-        statParamVal.put("lifeTimeMs",0);
-        statParamVal.put("idleTimeMs",0);
-        statParamVal.put("isEternal",0);
-        statParamVal.put("HitCount",0);
-        statParamVal.put("MissCount",0);
-        try {
-            ObjectName mbean = new ObjectName("ru.otus.hwork13.MyCache:type=MyCache");
-            final MBeanAttributeInfo[] attributes = mBeanServer.getMBeanInfo(mbean).getAttributes();
-            for (final MBeanAttributeInfo attribute : attributes) {
-                try {
-                    final Object value = mBeanServer.getAttribute(mbean,attribute.getName());
-                    if (value == null) {
-                        statParamVal.put(attribute.getName(),"");
-                    } else {
-                        statParamVal.put(attribute.getName(),value.toString());
-                    }
-                } catch (Exception e) {
-                    statParamVal.put(attribute.getName(),"");
-                }
-            }
-        } catch (  Exception e) {
-            e.printStackTrace();
-        }
-
+        statParamVal.put("maxElements",myCache.getmaxElements());
+        statParamVal.put("lifeTimeMs",myCache.getlifeTimeMs());
+        statParamVal.put("idleTimeMs",myCache.getidleTimeMs());
+        statParamVal.put("isEternal",String.valueOf(myCache.getisEternal()));
+        statParamVal.put("HitCount",myCache.getHitCount());
+        statParamVal.put("MissCount",myCache.getMissCount());
         return statParamVal;
     }
 

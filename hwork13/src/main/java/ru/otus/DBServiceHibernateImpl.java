@@ -8,20 +8,18 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import ru.otus.DS.*;
-import ru.otus.cache.MyCache;
 import ru.otus.cache.MyCacheMBean;
 
-import javax.management.*;
-import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.function.Function;
 
 public class DBServiceHibernateImpl implements DBService {
     private final SessionFactory sessionFactory;
-    private final MyCacheMBean<Integer, DataSet> myCache = new MyCache<Integer, DataSet> ();
+    private MyCacheMBean<Integer, DataSet> myCache;
 
-        public DBServiceHibernateImpl() {
-        Configuration configuration = new Configuration();
+        public DBServiceHibernateImpl(MyCacheMBean<Integer, DataSet> myCache) {
+            this.myCache = myCache;
+            Configuration configuration = new Configuration();
 
         configuration.addAnnotatedClass(UserDataSet.class);
         configuration.addAnnotatedClass(PhoneDataSet.class);
@@ -38,7 +36,6 @@ public class DBServiceHibernateImpl implements DBService {
         configuration.setProperty("hibernate.enable_lazy_load_no_trans", "true");
 
         sessionFactory = createSessionFactory(configuration);
-        RegMyCachMBean(myCache);
     }
 
     public DBServiceHibernateImpl(Configuration configuration) {
@@ -50,23 +47,6 @@ public class DBServiceHibernateImpl implements DBService {
         builder.applySettings(configuration.getProperties());
         ServiceRegistry serviceRegistry = builder.build();
         return configuration.buildSessionFactory(serviceRegistry);
-    }
-
-    private void RegMyCachMBean(MyCacheMBean<Integer, DataSet> myCache) {
-        MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-        try {
-            mBeanServer.registerMBean(myCache, new ObjectName("ru.otus.hwork13.MyCache:type=MyCache"));
-        } catch (InstanceAlreadyExistsException e) {
-            e.printStackTrace();
-        } catch (MBeanRegistrationException e) {
-            e.printStackTrace();
-        } catch (NotCompliantMBeanException e) {
-            e.printStackTrace();
-        } catch (MalformedObjectNameException e) {
-            e.printStackTrace();
-        } catch (MBeanException e) {
-            e.printStackTrace();
-        }
     }
 
     public String getLocalStatus() {

@@ -21,11 +21,11 @@ public class MyCache<K, V> implements MyCacheMBean<K, V> {
     private int hit = 0;
     private int miss = 0;
 
-    public MyCache(){
-        this.maxElements = 5;
-        this.lifeTimeMs = 60000;
-        this.idleTimeMs = 10000;
-        this.isEternal = false;
+    public MyCache(int maxElements, long lifeTimeMs, long idleTimeMs){
+        this.maxElements = maxElements;
+        this.lifeTimeMs = lifeTimeMs;
+        this.idleTimeMs = idleTimeMs;
+        this.isEternal = lifeTimeMs == 0 && idleTimeMs == 0;
 
     }
 
